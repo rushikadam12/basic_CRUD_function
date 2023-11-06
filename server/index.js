@@ -12,6 +12,34 @@ const db=mysql.createConnection({
 })
 
 app.use(express.json());
+app.put('/updateInfo/:oldname',(req,res)=>{
+        const oldname=req.params.oldname;
+        const {name,salary,age,position,country}=req.body;
+        const qr='UPDATE employees SET name=? WHERE name=?';
+        db.query(qr,[name,oldname],(err,result)=>{
+                if(err){
+                    res.status(404);
+                    console.log('data is not updated')
+                }
+                else{
+                    res.send('data is updated in database');
+                }
+        })
+})
+
+app.delete('/deleteInfo/:emp',(req,res)=>{
+    const name=req.params.emp;
+    
+    db.query('DELETE FROM employees WHERE name=?',name,(err,result)=>{
+        if(err){
+            res.status(404);
+            console.log('Data not found');
+        }else{
+            res.send('Data is delete successfully');
+        }
+    })
+})
+
 app.post('/create',(req,res)=>{
     const name=req.body.name;
     const salary=req.body.salary;
@@ -43,6 +71,7 @@ app.get('/getInfo',(req,res)=>{
         }
 })
 })
+
 
 app.listen(3000,()=>{
     console.log("Server is running");
